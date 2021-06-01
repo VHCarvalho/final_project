@@ -3,5 +3,9 @@
 {% block title %}Wall{% endblock %}
 
 {% block main %}
-    <p>Wall, right here</p>
+    {% for post in posts %}
+
+        <p>{{ post.post }}</p>
+
+    {% endfor %}
 {% endblock %}

@@ -38,7 +38,18 @@ def login_required(f):
 def index():
     """Shows all posts on the wall starting from the most upvoted to the last"""
     #TODO    
-    return render_template("index.html")
+
+    db = sqlite3.connect("database.db")
+    db.row_factory = sqlite3.Row
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM posts;")
+
+    posts = [dict(row) for row in cursor.fetchall()]
+
+
+
+    return render_template("index.html", posts = posts)
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
@@ -111,6 +122,20 @@ def login():
 def dash():
     """Shows some graphs about his posts and require him to post on the walls"""
     #TODO
+    if request.method == "POST":
+        post = request.form.get("post")
+
+        db = sqlite3.connect("database.db")
+        db.row_factory = sqlite3.Row
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO posts (user_id, post, upvote, downvote) VALUES (?, ?, 0, 0)", (session["user_id"], post))
+
+        db.commit()
+        db.close()
+
+        return redirect('/')
+
     return render_template("dash.html")
 
 @app.route("/logout")
@@ -123,4 +148,15 @@ def logout():
 @login_required
 def history():
     #TODO
-    return render_template("history.html")
+    db = sqlite3.connect("database.db")
+    db.row_factory = sqlite3.Row
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM posts WHERE user_id = ?;", (session["user_id"],))
+
+    posts = [dict(row) for row in cursor.fetchall()]
+
+
+
+
+    return render_template("history.html", posts = posts)

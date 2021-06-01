@@ -5,5 +5,9 @@
 {% endblock %}
 
 {% block main %}
-    <p>History, right here</p>
+    {% for post in posts %}
+
+        <p>{{ post.post }}</p>
+
+    {% endfor %}
 {%  endblock %}
