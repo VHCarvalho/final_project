@@ -34,7 +34,7 @@ def login_required(f):
 
 
 @app.route("/", methods =['GET', 'POST'])
-@login_required
+#@login_required
 def index():
     """Shows all posts on the wall starting from the most upvoted to the last"""
     #TODO    
@@ -129,7 +129,7 @@ def dash():
         db.row_factory = sqlite3.Row
         cursor = db.cursor()
 
-        cursor.execute("INSERT INTO posts (user_id, post, upvote, downvote) VALUES (?, ?, 0, 0)", (session["user_id"], post))
+        cursor.execute("INSERT INTO posts (user_id, post, upvote) VALUES (?, ?, 0)", (session["user_id"], post))
 
         db.commit()
         db.close()
@@ -160,3 +160,47 @@ def history():
 
 
     return render_template("history.html", posts = posts)
+
+@app.route("/upvote", methods = ['POST'])
+@login_required
+def upvote():
+
+    post_id = request.form.get("post_id")
+    
+    db = sqlite3.connect("database.db")
+    db.row_factory = sqlite3.Row
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM posts WHERE post_id = ?", (post_id, ))
+
+    rows = [dict(row) for row in cursor.fetchall()]
+
+    if rows[0]["upvoted_by"] == None:
+
+        rows[0]["upvoted_by"] = str(session["user_id"])
+        
+    elif str(session["user_id"]) in list(rows[0]["upvoted_by"].split(',')):
+        message = "You already upvoted for this post :)"
+        return render_template("apology.html", message = message)
+    else:
+        rows[0]["upvoted_by"] += "," + str(session["user_id"])
+    
+        if rows[0]["upvote"] == None:
+            rows[0]["upvote"] = 1
+        else:
+            rows[0]["upvote"] += 1
+    
+        cursor.execute("UPDATE posts SET upvoted_by = ?, upvote = ? WHERE post_id =?", (rows[0]["upvoted_by"], rows[0]["upvote"], post_id))
+
+        db.commit()
+
+        db.close()
+
+        return redirect("/")
+
+
+
+
+
+
+

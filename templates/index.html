@@ -4,8 +4,12 @@
 
 {% block main %}
     {% for post in posts %}
-
-        <p>{{ post.post }}</p>
+        <form action="/upvote" method="POST">
+            <p>{{ post.post }} | Upvotes: {{ post.upvote }}</p>
+            <input type="hidden" name="post_id" value="{{ post.post_id }}">
+            <input type="submit" value="Upvote" class="btn btn-primary">
+        </form>
+            
 
     {% endfor %}
 {% endblock %}
