@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+    <form action="/post" method="POST">
+        <input type="text" name="post" id="" autofocus placeholder="Type your inspirational message">
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+{%  endblock %}
