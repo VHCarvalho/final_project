@@ -54,7 +54,6 @@ def index():
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
     """Request user to register"""
-    #TODO
 
     if request.method == "POST":
         name = request.form.get("username")
@@ -86,7 +85,7 @@ def register():
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
     """Request user to login"""
-    #TODO
+
     if request.method == "POST":
         session.clear()
         name = request.form.get("username")
@@ -110,18 +109,18 @@ def login():
         
         session["user_id"] = login[0]['id']
         
-        return redirect("/dash")
+        return redirect("/post")
     try:
         if session["user_id"] != None:
-            return redirect('/dash')
+            return redirect('/post')
     except:
         return render_template("login.html")
 
-@app.route("/dash", methods = ['GET', 'POST'])
+@app.route("/post", methods = ['GET', 'POST'])
 @login_required
-def dash():
-    """Shows some graphs about his posts and require him to post on the walls"""
-    #TODO
+def post():
+    """Input to post on the wall"""
+
     if request.method == "POST":
         post = request.form.get("post")
 
@@ -136,7 +135,7 @@ def dash():
 
         return redirect('/')
 
-    return render_template("dash.html")
+    return render_template("post.html")
 
 @app.route("/logout")
 def logout():
@@ -147,7 +146,7 @@ def logout():
 @app.route("/history")
 @login_required
 def history():
-    #TODO
+
     db = sqlite3.connect("database.db")
     db.row_factory = sqlite3.Row
     cursor = db.cursor()

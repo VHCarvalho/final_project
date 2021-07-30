@@ -31,3 +31,10 @@ main div .form-group
 padding: 0.25rem;
 
 }
+main div{
+    padding-bottom: 0.5rem;
+}
+
+#posts {
+    display: inline;
+}
